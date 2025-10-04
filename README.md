@@ -1,111 +1,91 @@
- Which language should they discontinue stocking?
-Query Used:
+# Gravity Books Data Analysis
 
-SELECT book_language.language_id, language_name, COUNT(book.book_id) AS num_books
-FROM book
-JOIN book_language ON book.language_id = book_language.language_id
-GROUP BY book_language.language_id
-ORDER BY num_books ASC;
-
-## Why This Query?
-This query counts the number of books available per language, ordered from least to most, helping identify languages with minimal inventory that could be discontinued.
-
-Results Summary:
-Languages like Dutch, Norwegian, Serbian, Galician, Turkish, Welsh, Gaelic, Arabic, Aleut, and Malaysian each have only 1 book, indicating low stock or demand.
-
-Recommendation:
-Discontinue languages with minimal inventory (1-2 books) to optimize stock and focus on high-demand languages like English, Spanish, and French.
-What author should they pick for a special promotion?
-
-Query Used:
-
-SELECT a.author_name, COUNT(*) AS book_count
-FROM book_author ba
-JOIN author a ON ba.author_id = a.author_id
-GROUP BY a.author_name
-ORDER BY book_count DESC
-LIMIT 1;
-
-
-Why This Query?
-Counts books per author to find the one with the largest catalog, indicating popularity and potential for promotion.
-
-Results:
-Stephen King has the most books (70), making him an ideal candidate.
-
-Recommendation:
-Focus promotion on Stephen King due to his wide catalog and strong market presence, allowing diverse marketing campaigns.
-
-3. What 10 customers should the sales team contact?
-
-Query Used:
-
-SELECT c.customer_id, c.first_name, c.last_name, SUM(ol.price) AS total_spent
-FROM customer c
-JOIN cust_order co ON c.customer_id = co.customer_id
-JOIN order_line ol ON co.order_id = ol.order_id
-JOIN customer_address ca ON c.customer_id = ca.customer_id
-JOIN address a ON ca.address_id = a.address_id
-JOIN country cn ON a.country_id = cn.country_id
-GROUP BY c.customer_id
-ORDER BY total_spent DESC
-LIMIT 10;
-
-
-Why This Query?
-Aggregates total spending per customer to identify the top 10 highest spenders for targeted outreach.
-
-Results:
-Top customers include Rozamond Farrell, Modesta Gullefant, Pierrette Diess, among others.
-
-Recommendation:
-Prioritize these customers for loyalty programs and personalized promotions to maximize revenue.
-
-4. Where should Gravity Books add a new warehouse?
-
-Query 1: Top 10 cities by customer count
-
-SELECT a.city, c.country_name, COUNT(*) AS customer_count
-FROM customer_address ca
-JOIN address a ON ca.address_id = a.address_id
-JOIN country c ON a.country_id = c.country_id
-GROUP BY c.country_name, a.city
-ORDER BY customer_count DESC
-LIMIT 10;
-
-
-Query 2: Total customers in China and Sweden
-
-SELECT c.country_name, COUNT(cus.customer_id) AS total_customers
-FROM customer cus
-JOIN customer_address ca ON cus.customer_id = ca.customer_id
-JOIN address a ON ca.address_id = a.address_id
-JOIN country c ON a.country_id = c.country_id
-WHERE c.country_name IN ('China', 'Sweden')
-GROUP BY c.country_name
-ORDER BY total_customers DESC;
-
-
-Analysis:
-
-Chengguan, China, and Västerås, Sweden, tie as top cities by customers.
-
-China has 589 total customers; Sweden has 94.
-
-Recommendation:
-Open the warehouse in Chengguan, China, due to its larger customer base and logistical advantages.
-
-Summary
-
-Discontinue low-stock languages with fewer than 3 books.
-
-Promote Stephen King based on largest book catalog.
-
-Target top 10 highest-spending customers for sales efforts.
-
-Locate new warehouse in Chengguan, China for optimized shipping.
-
-This analysis was conducted using SQL queries on the Gravity Books database to support business decision-making.
-
+This repository contains SQL queries and insights derived from the Gravity Books database to help optimize inventory, promotions, customer outreach, and logistics.
 
 ---
+
+## Table of Contents
+- [1. Language Discontinuation](#1-language-discontinuation)
+- [2. Author Promotion](#2-author-promotion)
+- [3. Top Customers to Contact](#3-top-customers-to-contact)
+- [4. Warehouse Location Recommendation](#4-warehouse-location-recommendation)
+- [5. Additional Insights](#5-additional-insights)
+- [6. References](#6-references)
+
+---
+
+## 1. Language Discontinuation
+
+**Purpose:** Identify languages with the lowest number of books to consider discontinuing stocking.
+
+**Summary:**  
+Languages such as Dutch, Norwegian, Serbian, and several others each have only 1 or 2 books in stock, indicating low demand.
+
+**Recommendation:**  
+Discontinue stocking languages with very low inventory to focus resources on languages with higher demand (e.g., English, Spanish, French).
+
+---
+
+## 2. Author Promotion
+
+**Purpose:** Find the author with the most books in the system to select for a special promotion.
+
+**Result:**  
+Stephen King has the highest number of books (70) in the inventory.
+
+**Recommendation:**  
+Leverage Stephen King’s large catalog for promotional campaigns to attract customers and increase sales.
+
+---
+
+## 3. Top Customers to Contact
+
+**Purpose:** Identify the top 10 customers by total spending for targeted sales outreach.
+
+**Result:**  
+Top customers have spent between approximately $978 and $1,779.
+
+**Recommendation:**  
+Focus sales efforts on these high-value customers with personalized promotions and loyalty programs.
+
+---
+
+## 4. Warehouse Location Recommendation
+
+**Purpose:** Determine the best city and country to locate a new warehouse for optimizing shipping.
+
+**Result:**  
+- Top cities by customer count: Västerås (Sweden) and Chengguan (China)  
+- Total customers: China (589) vs. Sweden (94)
+
+**Recommendation:**  
+Open the warehouse in **Chengguan, China** to leverage the larger customer base and better logistical infrastructure.
+
+---
+
+## 5. Additional Insights
+
+- The database follows normalization principles with many-to-many relationships to reduce redundancy.  
+- Address duplication might exist; applying database constraints could improve data integrity.
+
+---
+
+## 6. References
+
+- Guasch, C. G. (2024). *How to remove Duplicate Records & Data in SQL?* SQL Easy Tutorial.  
+  [https://www.sql-easy.com/learn/how-to-remove-duplicates-in-sql/](https://www.sql-easy.com/learn/how-to-remove-duplicates-in-sql/)
+
+---
+
+## How to Use
+
+- All SQL queries are included in the `/queries` directory.  
+- Run queries against your Gravity Books database to reproduce results.
+
+---
+
+If you have any questions or want to contribute, feel free to open an issue or submit a pull request!
+
+---
+
+
