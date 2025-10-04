@@ -1,0 +1,18 @@
+-- Query: Total customers in China and Sweden
+SELECT
+    cn.country_name,
+    COUNT(DISTINCT c.customer_id) AS total_customers
+FROM
+    customer c
+JOIN
+    customer_address ca ON c.customer_id = ca.customer_id
+JOIN
+    address a ON ca.address_id = a.address_id
+JOIN
+    country cn ON a.country_id = cn.country_id
+WHERE
+    cn.country_name IN ('China', 'Sweden')
+GROUP BY
+    cn.country_name
+ORDER BY
+    total_customers DESC;
